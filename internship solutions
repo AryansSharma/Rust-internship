@@ -1,0 +1,370 @@
+fn is_palindrome(s: &str) -> bool {
+    let cleaned_chars: Vec<char> = s.chars().filter(|c| c.is_alphanumeric()).collect();
+    let len = cleaned_chars.len();
+
+    for i in 0..len / 2 {
+        if cleaned_chars[i].to_ascii_lowercase() != cleaned_chars[len - 1 - i].to_ascii_lowercase() {
+            return false;
+        }
+    }
+
+    true
+}
+
+fn main() {
+    // Example usage:
+    let example_str = "Hi my name is Aryan";
+    if is_palindrome(example_str) {
+        println!("{} is a palindrome!", example_str);
+    } else {
+        println!("{} is not a palindrome.", example_str);
+    }
+}
+
+
+
+
+//2
+fn find_first_occurrence(arr: &[i32], target: i32) -> Option<usize> {
+    let mut low = 0;
+    let mut high = arr.len();
+
+    while low < high {
+        let mid = low + (high - low) / 2;
+
+        if arr[mid] < target {
+            low = mid + 1;
+        } else {
+            high = mid;
+        }
+    }
+
+    if low < arr.len() && arr[low] == target {
+        Some(low)
+    } else {
+        None
+    }
+}
+
+fn main() {
+    // Example usage:
+    let sorted_array = vec![1, 2, 3, 3, 4, 5, 6, 7, 8, 9];
+    let target = 3;
+
+    match find_first_occurrence(&sorted_array, target) {
+        Some(index) => println!("The first occurrence of {} is at index {}", target, index),
+        None => println!("{} is not present in the array", target),
+    }
+}
+
+//3
+fn find_shortest_word(s: &str) -> Option<&str> {
+    s.split_whitespace()
+        .min_by_key(|word| word.len())
+}
+
+fn main() {
+    // Example usage:
+    let input_string = "This is a sample string with some words";
+    
+    match find_shortest_word(input_string) {
+        Some(shortest_word) => println!("The shortest word is: {}", shortest_word),
+        None => println!("No words found in the input string"),
+    }
+}
+
+
+//4
+fn is_prime(num: u64) -> bool {
+    if num < 2 {
+        return false;
+    }
+
+    for i in 2..=(num as f64).sqrt() as u64 {
+        if num % i == 0 {
+            return false;
+        }
+    }
+
+    true
+}
+
+fn main() {
+    // Example usage:
+    let number = 17;
+
+    if is_prime(number) {
+        println!("{} is a prime number", number);
+    } else {
+        println!("{} is not a prime number", number);
+    }
+}
+
+//5
+fn find_median(sorted_array: &[i32]) -> Option<f64> {
+    let len = sorted_array.len();
+
+    if len == 0 {
+        return None;
+    }
+
+    if len % 2 == 1 {
+        // Odd number of elements
+        Some(sorted_array[len / 2] as f64)
+    } else {
+        // Even number of elements
+        let mid1 = sorted_array[len / 2 - 1] as f64;
+        let mid2 = sorted_array[len / 2] as f64;
+        Some((mid1 + mid2) / 2.0)
+    }
+}
+
+fn main() {
+    // Example usage:
+    let sorted_array_odd = vec![1, 2, 3, 4, 5];
+    let sorted_array_even = vec![1, 2, 3, 4, 5, 6];
+
+    match find_median(&sorted_array_odd) {
+        Some(median) => println!("Median of odd array: {}", median),
+        None => println!("Empty array"),
+    }
+
+    match find_median(&sorted_array_even) {
+        Some(median) => println!("Median of even array: {}", median),
+        None => println!("Empty array"),
+    }
+}
+
+
+//6
+fn find_median(sorted_array: &[i32]) -> Option<f64> {
+    let len = sorted_array.len();
+
+    if len == 0 {
+        return None;
+    }
+
+    if len % 2 == 1 {
+        // Odd number of elements
+        Some(sorted_array[len / 2] as f64)
+    } else {
+        // Even number of elements
+        let mid1 = sorted_array[len / 2 - 1] as f64;
+        let mid2 = sorted_array[len / 2] as f64;
+        Some((mid1 + mid2) / 2.0)
+    }
+}
+
+fn main() {
+    // Example usage:
+    let sorted_array_odd = vec![1, 2, 3, 4, 5];
+    let sorted_array_even = vec![1, 2, 3, 4, 5, 6];
+
+    match find_median(&sorted_array_odd) {
+        Some(median) => println!("Median of odd array: {}", median),
+        None => println!("Empty array"),
+    }
+
+    match find_median(&sorted_array_even) {
+        Some(median) => println!("Median of even array: {}", median),
+        None => println!("Empty array"),
+    }
+}
+
+
+//7
+fn partition(arr: &mut [i32], left: usize, right: usize) -> usize {
+    let pivot_index = (left + right) / 2;
+    let pivot_value = arr[pivot_index];
+
+    arr.swap(pivot_index, right);
+
+    let mut i = left;
+    for j in left..right {
+        if arr[j] < pivot_value {
+            arr.swap(i, j);
+            i += 1;
+        }
+    }
+    arr.swap(i, right);
+    i
+}
+
+fn quick_select(arr: &mut [i32], left: usize, right: usize, k: usize) -> i32 {
+    if left == right {
+        return arr[left];
+    }
+
+    let pivot_index = partition(arr, left, right);
+
+    if k == pivot_index {
+        return arr[k];
+    } else if k < pivot_index {
+        return quick_select(arr, left, pivot_index - 1, k);
+    } else {
+        return quick_select(arr, pivot_index + 1, right, k);
+    }
+}
+
+fn kth_smallest_element(arr: &mut [i32], k: usize) -> Option<i32> {
+    if k > arr.len() {
+        return None;
+    }
+    Some(quick_select(arr, 0, arr.len() - 1, k - 1))
+}
+
+fn main() {
+    // Example usage:
+    let mut array = vec![7, 10, 4, 3, 20, 15];
+    let k = 3;
+
+    match kth_smallest_element(&mut array, k) {
+        Some(kth_smallest) => println!("The {}th smallest element is {}", k, kth_smallest),
+        None => println!("Invalid input"),
+    }
+}
+
+
+//8
+use std::cmp;
+
+// Definition for a binary tree node.
+#[derive(Debug, PartialEq, Eq)]
+struct TreeNode {
+    val: i32,
+    left: Option<Box<TreeNode>>,
+    right: Option<Box<TreeNode>>,
+}
+
+impl TreeNode {
+    fn new(val: i32) -> Self {
+        TreeNode { val, left: None, right: None }
+    }
+}
+
+fn max_depth(root: Option<Box<TreeNode>>) -> i32 {
+    match root {
+        Some(node) => {
+            let left_depth = max_depth(node.left);
+            let right_depth = max_depth(node.right);
+            1 + cmp::max(left_depth, right_depth)
+        }
+        None => 0,
+    }
+}
+
+fn main() {
+    // Example usage:
+    let tree = Some(Box::new(TreeNode {
+        val: 1,
+        left: Some(Box::new(TreeNode::new(2))),
+        right: Some(Box::new(TreeNode::new(3))),
+    }));
+
+    let depth = max_depth(tree);
+    println!("The maximum depth of the tree is: {}", depth);
+}
+
+
+//9
+fn reverse_string(s: &str) -> String {
+    s.chars().rev().collect()
+}
+
+fn main() {
+    // Example usage:
+    let original_string = "Hello, World!";
+    let reversed_string = reverse_string(original_string);
+
+    println!("Original string: {}", original_string);
+    println!("Reversed string: {}", reversed_string);
+}
+
+
+//10
+fn is_prime(num: u64) -> bool {
+    if num < 2 {
+        return false;
+    }
+
+    for i in 2..=(num as f64).sqrt() as u64 {
+        if num % i == 0 {
+            return false;
+        }
+    }
+
+    true
+}
+
+fn main() {
+    // Example usage:
+    let number = 17;
+
+    if is_prime(number) {
+        println!("{} is a prime number", number);
+    } else {
+        println!("{} is not a prime number", number);
+    }
+}
+
+
+//11
+fn merge_sorted_arrays(arr1: &[i32], arr2: &[i32]) -> Vec<i32> {
+    let mut result = Vec::with_capacity(arr1.len() + arr2.len());
+    let (mut i, mut j) = (0, 0);
+
+    while i < arr1.len() && j < arr2.len() {
+        if arr1[i] < arr2[j] {
+            result.push(arr1[i]);
+            i += 1;
+        } else {
+            result.push(arr2[j]);
+            j += 1;
+        }
+    }
+
+    // Append remaining elements from arr1
+    result.extend_from_slice(&arr1[i..]);
+
+    // Append remaining elements from arr2
+    result.extend_from_slice(&arr2[j..]);
+
+    result
+}
+
+fn main() {
+    // Example usage:
+    let sorted_array1 = vec![1, 3, 5, 7, 9];
+    let sorted_array2 = vec![2, 4, 6, 8, 10];
+
+    let merged_array = merge_sorted_arrays(&sorted_array1, &sorted_array2);
+
+    println!("Merged sorted array: {:?}", merged_array);
+}
+
+
+//12
+fn max_subarray_sum(arr: &[i32]) -> i32 {
+    if arr.is_empty() {
+        return 0;
+    }
+
+    let mut max_sum = arr[0];
+    let mut current_sum = arr[0];
+
+    for &num in &arr[1..] {
+        current_sum = current_sum.max(current_sum + num);
+        max_sum = max_sum.max(current_sum);
+    }
+
+    max_sum
+}
+
+fn main() {
+    // Example usage:
+    let array = vec![-2, 1, -3, 4, -1, 2, 1, -5, 4];
+    let max_sum = max_subarray_sum(&array);
+
+    println!("Maximum subarray sum: {}", max_sum);
+}
+
